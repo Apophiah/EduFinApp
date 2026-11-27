@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Budgets{% endblock %}
+{% block content %}
+<section class="page-head reveal">
+  <div>
+    <p class="eyebrow">{{ month_label }}</p>
+    <h1>Budgets</h1>
+    <p class="muted">Set a monthly limit per category. Bars turn amber at 80% and red when you go over.</p>
+  </div>
+</section>
+
+<section class="grid-2 grid-budget">
+  <article class="card reveal">
+    <h2><svg class="icon"><use href="#i-target"/></svg>This month</h2>
+    {% if budgets %}
+    {% include 'partials/budget_bars.html' with show_delete=True %}
+    {% else %}
+    {% include 'partials/empty.html' with text='No budgets yet. Add your first one with the form.' %}
+    {% endif %}
+  </article>
+  <article class="card reveal">
+    <h2><svg class="icon"><use href="#i-plus"/></svg>Set a budget</h2>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% include 'partials/field.html' with field=form.category %}
+      {% include 'partials/field.html' with field=form.monthly_limit %}
+      <p class="help">Setting a budget for a category that already has one updates its limit.</p>
+      <div class="form-actions"><button class="btn btn-primary" type="submit">Save budget</button></div>
+    </form>
+  </article>
+</section>
+{% endblock %}

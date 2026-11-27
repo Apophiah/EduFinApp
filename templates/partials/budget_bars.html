@@ -1,0 +1,25 @@
+{% load money %}
+<ul class="budget-list">
+  {% for b in budgets %}
+  <li class="budget-item state-{{ b.state }}">
+    <div class="budget-row">
+      <strong>{{ b.budget.category_label }}</strong>
+      <span class="muted">{{ b.spent|money }} of {{ b.budget.monthly_limit|money }}</span>
+    </div>
+    <svg class="progress" viewBox="0 0 100 8" preserveAspectRatio="none" role="img" aria-label="{{ b.pct }}% of the {{ b.budget.category_label }} budget used">
+      <rect class="progress-track" width="100" height="8" rx="4"/>
+      <rect class="progress-fill" width="{{ b.bar }}" height="8" rx="4"/>
+    </svg>
+    <div class="budget-row small">
+      <span>{{ b.pct }}% used</span>
+      <span class="{% if b.state == 'over' %}neg{% endif %}">{% if b.left >= 0 %}{{ b.left|money }} left{% else %}{{ b.over_by|money }} over{% endif %}</span>
+    </div>
+    {% if show_delete %}
+    <form method="post" action="{% url 'budget_delete' b.budget.pk %}" class="budget-delete">
+      {% csrf_token %}
+      <button class="btn btn-ghost btn-xs" type="submit" data-confirm="Remove the {{ b.budget.category_label }} budget?"><svg class="icon"><use href="#i-trash"/></svg>Remove</button>
+    </form>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
