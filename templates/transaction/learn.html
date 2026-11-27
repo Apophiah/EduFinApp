@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Learn{% endblock %}
+{% block content %}
+<section class="page-head reveal">
+  <div>
+    <p class="eyebrow">Money skills</p>
+    <h1>Learn the basics</h1>
+    <p class="muted">Short lessons that match what you can track in EduFin.</p>
+  </div>
+</section>
+
+<section class="lesson-grid">
+  <article class="card lesson reveal">
+    <div class="lesson-icon icon-float"><svg class="icon"><use href="#i-pie"/></svg></div>
+    <h2>The 50/30/20 rule</h2>
+    <p>Split what comes in: about <strong>50%</strong> for needs (rent, food, transport, fees), <strong>30%</strong> for wants and <strong>20%</strong> for savings. Your dashboard's savings rate shows how close you are.</p>
+  </article>
+  <article class="card lesson reveal">
+    <div class="lesson-icon icon-wiggle"><svg class="icon"><use href="#i-piggy"/></svg></div>
+    <h2>Pay yourself first</h2>
+    <p>When your allowance or bursary arrives, move a fixed amount to savings straight away, before you spend. Small and regular beats big and rare.</p>
+  </article>
+  <article class="card lesson reveal">
+    <div class="lesson-icon icon-rise"><svg class="icon"><use href="#i-shield"/></svg></div>
+    <h2>Build an emergency fund</h2>
+    <p>Aim for one month of essential costs set aside for surprises: a medical bill, a broken phone, a late payment. Then grow it to three months.</p>
+  </article>
+  <article class="card lesson reveal">
+    <div class="lesson-icon icon-glow"><svg class="icon"><use href="#i-target"/></svg></div>
+    <h2>Budget the leaks</h2>
+    <p>Airtime, data, snacks and transport add up fast. Put a monthly limit on them on the <a href="{% url 'budgets' %}">Budgets</a> page and watch the bars.</p>
+  </article>
+  <article class="card lesson reveal">
+    <div class="lesson-icon icon-float"><svg class="icon"><use href="#i-list"/></svg></div>
+    <h2>Track every franc</h2>
+    <p>Record transactions the day they happen. After a month you will see patterns you did not expect, and that is where the savings are.</p>
+  </article>
+  <article class="card lesson reveal">
+    <div class="lesson-icon icon-rise"><svg class="icon"><use href="#i-cap"/></svg></div>
+    <h2>Plan for fees early</h2>
+    <p>Tuition and book costs come at known times. Divide them by the months left and save that amount each month so the term start is not a shock.</p>
+  </article>
+</section>
+{% endblock %}

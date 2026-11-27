@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load money %}
+{% block title %}Delete transaction{% endblock %}
+{% block content %}
+<section class="narrow">
+  <div class="card form-card reveal center">
+    <div class="danger-icon icon-wiggle"><svg class="icon"><use href="#i-trash"/></svg></div>
+    <h1>Delete this transaction?</h1>
+    <p class="muted">{{ tx.get_kind_display }} of <strong>{{ tx.amount|money }}</strong> · {{ tx.category_label }} · {{ tx.date|date:"j M Y" }}{% if tx.description %}<br>“{{ tx.description }}”{% endif %}</p>
+    <p class="small muted">This cannot be undone.</p>
+    <form method="post" class="form-actions center">
+      {% csrf_token %}
+      <a class="btn btn-ghost" href="{% url 'transaction_list' %}">Keep it</a>
+      <button class="btn btn-danger" type="submit">Delete</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

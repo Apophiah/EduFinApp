@@ -1,16 +1,22 @@
+from django.contrib.auth.decorators import login_not_required
 from django.http import JsonResponse
-from django.shortcuts import render
-from core.models import Testing
-from core.serializers import TestingSerializer
+from django.views.decorators.http import require_GET
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-@api_view(["GET"])
-def testing_view(request):
-    
-    data_to_test = Testing.objects.all()
-    serializer = TestingSerializer(data_to_test, many=True)
+from core.models import Testing
+from core.serializers import TestingSerializer
 
-    return Response(serializer.data_to_test)
+
+@login_not_required  # DRF's IsAuthenticated answers 403 itself
+@api_view(['GET'])
+def testing_view(request):
+    items = Testing.objects.all()
+    serializer = TestingSerializer(items, many=True)
+    return Response(serializer.data)
+
+
+@login_not_required
+@require_GET
 def health_check(request):
-    return JsonResponse ({'status': 'OK'})
+    return JsonResponse({'status': 'OK'})

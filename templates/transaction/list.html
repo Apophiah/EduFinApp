@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load money %}
+{% block title %}Transactions{% endblock %}
+{% block content %}
+<section class="page-head reveal">
+  <div>
+    <p class="eyebrow">Your money</p>
+    <h1>Transactions</h1>
+    <p class="muted">{{ page.paginator.count }} result{{ page.paginator.count|pluralize }} · in {{ income_total|money }} · out {{ expense_total|money }}</p>
+  </div>
+  <div class="head-actions">
+    <a class="btn btn-primary" href="{% url 'transaction_create' %}"><svg class="icon"><use href="#i-plus"/></svg>New transaction</a>
+  </div>
+</section>
+
+<form class="card filters reveal" method="get" role="search">
+  <label class="field field-grow">
+    <span class="sr-only">Search descriptions</span>
+    <span class="input-icon"><svg class="icon"><use href="#i-search"/></svg>{{ filters.q }}</span>
+  </label>
+  <label class="field"><span class="sr-only">Type</span>{{ filters.kind }}</label>
+  <label class="field"><span class="sr-only">Category</span>{{ filters.category }}</label>
+  <label class="field"><span class="sr-only">Month</span>{{ filters.month }}</label>
+  <button class="btn btn-ghost" type="submit"><svg class="icon"><use href="#i-filter"/></svg>Filter</button>
+  {% if request.GET %}<a class="btn btn-link" href="{% url 'transaction_list' %}">Clear</a>{% endif %}
+  {% if filters.errors %}<p class="form-error full">{% for field in filters %}{% for e in field.errors %}{{ e }} {% endfor %}{% endfor %}</p>{% endif %}
+</form>
+
+{% if page.object_list %}
+<div class="card table-card reveal">
+  <table class="tx-table">
+    <thead>
+      <tr><th scope="col">Date</th><th scope="col">Description</th><th scope="col">Category</th><th scope="col" class="num">Amount</th><th scope="col"><span class="sr-only">Actions</span></th></tr>
+    </thead>
+    <tbody>
+      {% for tx in page.object_list %}
+      <tr class="row-in">
+        <td data-label="Date" class="nowrap">{{ tx.date|date:"j M Y" }}</td>
+        <td data-label="Description">
+          <span class="tx-cell"><span class="tx-badge {{ tx.kind }}"><svg class="icon"><use href="#i-{% if tx.is_income %}up{% else %}down{% endif %}"/></svg></span>{{ tx.description|default:"—" }}</span>
+        </td>
+        <td data-label="Category"><span class="chip">{{ tx.category_label }}</span></td>
+        <td data-label="Amount" class="num amount {{ tx.kind }}">{% if tx.is_income %}+{% else %}−{% endif %}{{ tx.amount|money }}</td>
+        <td class="actions">
+          <a class="icon-btn" href="{% url 'transaction_update' tx.pk %}" title="Edit"><svg class="icon"><use href="#i-edit"/></svg><span class="sr-only">Edit</span></a>
+          <a class="icon-btn danger" href="{% url 'transaction_delete' tx.pk %}" title="Delete"><svg class="icon"><use href="#i-trash"/></svg><span class="sr-only">Delete</span></a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if page.has_other_pages %}
+<nav class="pager" aria-label="Pages">
+  {% if page.has_previous %}<a class="btn btn-ghost btn-sm" href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page.previous_page_number }}">← Previous</a>{% endif %}
+  <span class="muted">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}<a class="btn btn-ghost btn-sm" href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page.next_page_number }}">Next →</a>{% endif %}
+</nav>
+{% endif %}
+{% else %}
+<div class="card reveal">
+  {% include 'partials/empty.html' with text='No transactions match. Add one or clear the filters.' %}
+</div>
+{% endif %}
+{% endblock %}

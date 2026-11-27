@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}{% if is_edit %}Edit transaction{% else %}New transaction{% endif %}{% endblock %}
+{% block content %}
+<section class="narrow">
+  <a class="back-link" href="{% url 'transaction_list' %}">← Back to transactions</a>
+  <div class="card form-card reveal">
+    <h1>{% if is_edit %}Edit transaction{% else %}New transaction{% endif %}</h1>
+    <form method="post" novalidate data-tx-form>
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="alert alert-error">{{ form.non_field_errors|join:" " }}</div>{% endif %}
+
+      <fieldset class="kind-switch">
+        <legend class="sr-only">Type</legend>
+        {% for radio in form.kind %}
+        <label class="kind-option kind-{{ radio.data.value }}">
+          {{ radio.tag }}
+          <span><svg class="icon"><use href="#i-{% if radio.data.value == 'income' %}up{% else %}down{% endif %}"/></svg>{{ radio.choice_label }}</span>
+        </label>
+        {% endfor %}
+      </fieldset>
+      {% include 'partials/field_errors.html' with field=form.kind %}
+
+      <div class="form-grid">
+        {% include 'partials/field.html' with field=form.amount %}
+        {% include 'partials/field.html' with field=form.date %}
+        {% include 'partials/field.html' with field=form.category %}
+        {% include 'partials/field.html' with field=form.description %}
+      </div>
+
+      <div class="form-actions">
+        <a class="btn btn-ghost" href="{% url 'transaction_list' %}">Cancel</a>
+        <button class="btn btn-primary" type="submit">{% if is_edit %}Save changes{% else %}Add transaction{% endif %}</button>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

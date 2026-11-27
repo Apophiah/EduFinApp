@@ -1,0 +1,74 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}EduFin{% endblock %} · EduFin</title>
+  <meta name="description" content="EduFin: a personal finance tracker for students.">
+  <link rel="icon" href="{% static 'img/logo.svg' %}" type="image/svg+xml">
+  <script src="{% static 'js/theme.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+{% include 'partials/icons.html' %}
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="{% url 'dashboard' %}">
+      <img src="{% static 'img/logo.svg' %}" alt="" width="32" height="32">
+      <span>Edu<strong>Fin</strong></span>
+    </a>
+    {% if user.is_authenticated %}
+    <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" data-nav-toggle>
+      <svg class="icon"><use href="#i-menu"/></svg><span class="sr-only">Menu</span>
+    </button>
+    <nav id="main-nav" class="nav" aria-label="Main">
+      {% with name=request.resolver_match.url_name %}
+      <a href="{% url 'dashboard' %}" {% if name == 'dashboard' %}aria-current="page"{% endif %}><svg class="icon"><use href="#i-grid"/></svg>Dashboard</a>
+      <a href="{% url 'transaction_list' %}" {% if name == 'transaction_list' or name == 'transaction_update' or name == 'transaction_create' %}aria-current="page"{% endif %}><svg class="icon"><use href="#i-list"/></svg>Transactions</a>
+      <a href="{% url 'budgets' %}" {% if name == 'budgets' %}aria-current="page"{% endif %}><svg class="icon"><use href="#i-target"/></svg>Budgets</a>
+      <a href="{% url 'learn' %}" {% if name == 'learn' %}aria-current="page"{% endif %}><svg class="icon"><use href="#i-book"/></svg>Learn</a>
+      {% endwith %}
+    </nav>
+    {% endif %}
+    <div class="topbar-actions">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+        <svg class="icon sun"><use href="#i-sun"/></svg>
+        <svg class="icon moon"><use href="#i-moon"/></svg>
+      </button>
+      {% if user.is_authenticated %}
+      <span class="avatar" title="Signed in as {{ user.username }}">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
+      <form method="post" action="{% url 'logout' %}" class="inline-form">
+        {% csrf_token %}
+        <button class="btn btn-ghost btn-sm" type="submit"><svg class="icon"><use href="#i-logout"/></svg><span class="hide-sm">Log out</span></button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+<main id="main" class="wrap main">
+  {% if messages %}
+  <div class="toasts" role="status">
+    {% for message in messages %}
+    <div class="toast toast-{{ message.tags }}" data-toast>
+      <svg class="icon"><use href="#i-check"/></svg>
+      <span>{{ message }}</span>
+      <button type="button" class="toast-close" data-toast-close aria-label="Dismiss">&times;</button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <span>EduFin · money skills for students</span>
+    <span class="muted">Your data is private to your account.</span>
+  </div>
+</footer>
+<script src="{% static 'js/app.js' %}" defer></script>
+</body>
+</html>

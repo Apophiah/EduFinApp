@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Create account{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block content %}
+<section class="auth">
+  <div class="auth-hero reveal">
+    <p class="eyebrow">Join EduFin</p>
+    <h1>Start tracking in under a minute.</h1>
+    <p>Free, private and made for student budgets.</p>
+    <ul class="auth-points">
+      <li><svg class="icon"><use href="#i-shield"/></svg>Passwords are hashed, never stored in plain text</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>At least 10 characters, not a common password</li>
+    </ul>
+  </div>
+  <div class="card auth-card reveal">
+    <h2>Create your account</h2>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="alert alert-error">{{ form.non_field_errors|join:" " }}</div>{% endif %}
+      {% include 'partials/field.html' with field=form.username %}
+      {% include 'partials/field.html' with field=form.first_name %}
+      {% include 'partials/field.html' with field=form.email %}
+      {% include 'partials/field.html' with field=form.password1 %}
+      {% include 'partials/field.html' with field=form.password2 %}
+      <button class="btn btn-primary btn-block" type="submit">Create account</button>
+    </form>
+    <p class="muted center">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+  </div>
+</section>
+{% endblock %}
